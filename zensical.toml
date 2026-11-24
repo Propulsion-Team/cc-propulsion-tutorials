@@ -1,8 +1,7 @@
 [project]
+site_name = "CC + Propulsion Tutorials"
+site_description = "Tutorials and guides for using ComputerCraft:Tweaked with Create: Propulsion Simulated."
 site_url = "https://propulsion-team.github.io/"
-site_name = "Propulsion Team Tutorials"
-site_description = "Official documentation and tutorials from Propulsion Team."
-# site_author = "Propulsion Team"
 
 # copyright = "Copyright &copy; 2026 Your name"
 
