@@ -11,17 +11,17 @@ For this setup we will use a simple platform with a computer, 4 thrusters and a 
 </figure>
 
 ## Code
-Now the hard part. We have to make it hover and keep balance using PIDs.
+Now here is the hard part. We have to make it hover and keep balance using PIDs.
 
 ### Imports and peripherals setup
-Add usage for PID module from Advanced Math. For it you can use mod [CC: Sable](https://modrinth.com/mod/cc-sable)
+For this you can add usage for PID module from Advanced Math. For this you can use mod [CC: Sable](https://modrinth.com/mod/cc-sable)
 or standalone [Advanced Math](https://modrinth.com/datapack/advanced_math) datapack.
 ```lua
 local pid = require("advanced_math/pid")
 ```
 It will allow us to create PIDs later in the tutorial.
 
-Now add peripherals for our thrusters. In it, we will use IDs that modems give use when we add thrusters to the network.
+Now add peripherals for our thrusters. For it, we will use IDs that modems give use when we add thrusters to the network.
 <figure markdown="span">
 ![Hover platfom](https://propulsion-team.github.io/cc-propulsion-tutorials/assets/basic_pid/modem_connection.gif){ width="600" }
 <figcaption>Connecting thruster via modem</figcaption>
@@ -62,7 +62,7 @@ end
     Be careful, depending on how you created your sublevel Z and X rotations could be different.
     Change code accordingly.
 
-For altitude, we will use [CC: Sable's](https://modrinth.com/mod/cc-sable) to get sublevel's altitude.
+For altitude, we will use [CC: Sable's](https://modrinth.com/mod/cc-sable) `sublevel` api to get sublevel's altitude.
 
 ```lua
 function getAltitude()
@@ -70,7 +70,7 @@ return sublevel.getLogicalPose().position.y
 end
 ```
 ### Making PIDs
-PIDs is back bone of our script and we need 3 of them, for pitch, roll and altitude.
+PIDs is backbone of our script and we need 3 of them, for pitch, roll and altitude.
 
 To create PIDs we have to use our imported PID library that we saved in `pid` variable.
 ```lua
@@ -84,7 +84,7 @@ local pitch_pid = pid.new(0, 0.01, 0.0005, 0.05)
 local roll_pid = pid.new(0, 0.01, 0.0005, 0.05)
 local alt_pid = pid.new(100, 0.05, 0.0001, 0.5)
 ```
-Those parameters are for my platform and will be between different builds.
+Those parameters are for my platform and will be different across different builds.
 
 ### Main loop
 Time for an interesting part - the main loop. It will run every tick to get the ship's state, process PIDs and set thrusts.
@@ -102,14 +102,14 @@ local pitch_pid_output = pitch_pid:step(angles.z)
 local roll_pid_output = roll_pid:step(angles.x)
 local alt_pid_output = alt_pid:step(altitude)
 ```
-Also, it's a good idea to limit altitude output, so the ship won't lose control on decent
+Also, it's a good idea to limit altitude output, so the ship won't lose control on descent
 ```lua
 local alt_pid_output = math.max(alt_pid:step(altitude), 0)
 ```
 
 
-`step()` function in PIDs takes Pv (Process variable) to calculate error from Sp and use tuning parameters.
-To produce output that we will use for thrust in different thrusters.
+`step()` function in PIDs takes Pv (Process variable) to calculate error from Sp and use tuning parameters
+to produce output that we will use for thrust in different thrusters.
 
 #### Composing thruster inputs
 Now we have PID outputs, but we can't use them directly for thrust since all thrusters need to react differently for all 3 outputs.
@@ -151,7 +151,7 @@ br_input = (-pitch_output + -roll_output) / 2 + alt_input
 ```
 
 #### Applying thrust
-On the last part of our loop, we have to apply thrust. We are going to use the `setThrustPN()` function, but we have an issue with that.
+In the last part of our loop, we have to apply thrust. We are going to use the `setThrustPN()` function, but we have an issue with that.
 `setThrustPN()` takes one tick to apply thrust, and when we have 4 thrusters our loop will work 5 times a second and it is too slow.
 So we have to set thrusts in parallel and for that we have a pretty handy API. `parallel` allows you to call multiple functions in parallel.
 And with that we could set thrust for all of our thrusters in one tick. That means our loop will work 20 times a second, which is plenty of speed.
