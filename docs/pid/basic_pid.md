@@ -59,9 +59,8 @@ return angs_table
 end
 ```
 !!! note
-
-Be careful, depending on how you created your sublevel Z and X rotations could be different.
-Change code accordingly.
+    Be careful, depending on how you created your sublevel Z and X rotations could be different.
+    Change code accordingly.
 
 For altitude, we will use [CC: Sable's](https://modrinth.com/mod/cc-sable) to get sublevel's altitude.
 
